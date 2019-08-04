@@ -4,20 +4,26 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.cmpundhir.cm.cmsattendenceapp.R;
 import com.cmpundhir.cm.cmsattendenceapp.util.Constants;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,6 +33,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class HomeFragment extends Fragment {
 
+    private static final String TAG = "HomeFragment";
     TextView t1,t2;
     Button b1;
     SharedPreferences pref;
@@ -89,18 +96,33 @@ public class HomeFragment extends Fragment {
         String currentDateandTime = sdf.format(new Date());
         t2.setText(currentDateandTime);
         String[] arr = currentDateandTime.split("/");
-        String year,mon,day;
-        year = arr[0];
+        final String year,mon,day,course,uid,time;
+        uid = FirebaseAuth.getInstance().getUid();
+        day = arr[0];
         mon = arr[1];
-        day = arr[2];
-        int today = Integer.parseInt(year+mon+day);
-        int prev = pref.getInt(Constants.TODAY_ATTEND,0);
-        if(today>prev){
-            b1.setEnabled(true);
-        }else{
-            b1.setEnabled(false);
-            b1.setText("You are marked for the day");
-        }
+        year = arr[2];
+        course = pref.getString(Constants.COURSE,"Not found");
+        String path = year+"/"+mon+"/"+day+"/"+course+"/"+uid;
+        Log.d(TAG,path);
+        b1.setEnabled(false);
+        myRef.child(path).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG,dataSnapshot.toString());
+                if(dataSnapshot.getValue()!=null){
+                    b1.setEnabled(false);
+                    b1.setText("You already marked attendence");
+                }else{
+                    b1.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(getContext(), "Error : "+databaseError, Toast.LENGTH_SHORT).show();
+            }
+        });
+
         return view;
     }
 
@@ -141,7 +163,7 @@ public class HomeFragment extends Fragment {
         time = arr[3];
         course = pref.getString(Constants.COURSE,"Not found");
         uid = FirebaseAuth.getInstance().getUid();
-        myRef.child(year+"/"+mon+"/"+day+"/"+course+"/"+uid).setValue(time);
+         myRef.child(year+"/"+mon+"/"+day+"/"+course+"/"+uid).setValue(time);
         editor.putInt(Constants.TODAY_ATTEND,Integer.parseInt(year+mon+day));
         editor.commit();
 

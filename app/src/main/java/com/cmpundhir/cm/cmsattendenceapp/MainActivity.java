@@ -16,10 +16,13 @@ import com.cmpundhir.cm.cmsattendenceapp.fragments.HomeFragment;
 import com.cmpundhir.cm.cmsattendenceapp.fragments.NotificationFragment;
 import com.cmpundhir.cm.cmsattendenceapp.fragments.OnFragmentInteractionListener;
 import com.cmpundhir.cm.cmsattendenceapp.init.LoginActivity;
+import com.cmpundhir.cm.cmsattendenceapp.model.Attendence;
+import com.cmpundhir.cm.cmsattendenceapp.util.Constants;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -32,6 +35,12 @@ import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -44,9 +53,21 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.Menu;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener , OnFragmentInteractionListener , LocationListener {
     private static final int RC_LOCATION = 111;
+    private String TAG = "MainActivity";
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef = database.getReference(Constants.ATTENDENCE);
+
+    List<Attendence> attendenceList = new ArrayList<>();
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -70,13 +91,15 @@ public class MainActivity extends AppCompatActivity
     public double latitude;
     public double longitude;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        pref = getSharedPreferences("prefs",MODE_PRIVATE);
+        editor = pref.edit();
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,6 +131,8 @@ public class MainActivity extends AppCompatActivity
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 1, this);
+
+        checkAttend();
     }
 
     @Override
@@ -229,5 +254,42 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onProviderDisabled(String s) {
         Toast.makeText(this, "Provider disabled", Toast.LENGTH_SHORT).show();
+    }
+
+    private void checkAttend(){
+        String year,mon,day,course,uid,time,name;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/HH:mm:ss");
+        String currentDateandTime = sdf.format(new Date());
+        String[] arr = currentDateandTime.split("/");
+        year = arr[0];
+        mon = arr[1];
+        day = arr[2];
+        time = arr[3];
+        course = pref.getString(Constants.COURSE,"Not found");
+        name = pref.getString(Constants.NAME,"Not Found");
+        uid = FirebaseAuth.getInstance().getUid();
+
+        Query query = myRef.orderByChild("userId").equalTo(uid);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG,dataSnapshot.toString());
+                if(dataSnapshot.getValue()!=null){
+                    for(DataSnapshot d : dataSnapshot.getChildren()){
+                        Attendence attendence = d.getValue(Attendence.class);
+                        attendenceList.add(attendence);
+                        Log.d(TAG,attendence.toString());
+                    }
+                }else{
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d(TAG,databaseError.toString());
+            }
+        });
     }
 }

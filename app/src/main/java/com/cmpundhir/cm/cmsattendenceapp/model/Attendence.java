@@ -1,23 +1,43 @@
 package com.cmpundhir.cm.cmsattendenceapp.model;
 
 public class Attendence {
-    String date,time,course;
+    private String year,month,day,time,subject,userId,name;
 
     public Attendence() {
     }
 
-    public Attendence(String date, String time, String course) {
-        this.date = date;
+    public Attendence(String year, String month, String day, String time, String subject, String userId, String name) {
+        this.year = year;
+        this.month = month;
+        this.day = day;
         this.time = time;
-        this.course = course;
+        this.subject = subject;
+        this.userId = userId;
+        this.name = name;
     }
 
-    public String getDate() {
-        return date;
+    public String getYear() {
+        return year;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
+    }
+
+    public String getDay() {
+        return day;
+    }
+
+    public void setDay(String day) {
+        this.day = day;
     }
 
     public String getTime() {
@@ -28,11 +48,40 @@ public class Attendence {
         this.time = time;
     }
 
-    public String getCourse() {
-        return course;
+    public String getSubject() {
+        return subject;
     }
 
-    public void setCourse(String course) {
-        this.course = course;
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Attendence{" +
+                "year='" + year + '\'' +
+                ", month='" + month + '\'' +
+                ", day='" + day + '\'' +
+                ", time='" + time + '\'' +
+                ", subject='" + subject + '\'' +
+                ", userId='" + userId + '\'' +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

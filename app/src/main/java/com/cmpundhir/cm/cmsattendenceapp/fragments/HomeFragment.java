@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.cmpundhir.cm.cmsattendenceapp.R;
+import com.cmpundhir.cm.cmsattendenceapp.model.Attendence;
 import com.cmpundhir.cm.cmsattendenceapp.util.Constants;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,10 +24,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Queue;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -91,47 +94,9 @@ public class HomeFragment extends Fragment {
                 b1.setText("You are marked for the day");
             }
         });
-        //SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        String currentDateandTime = sdf.format(new Date());
-        t2.setText(currentDateandTime);
-        String[] arr = currentDateandTime.split("/");
-        final String year,mon,day,course,uid,time;
-        uid = FirebaseAuth.getInstance().getUid();
-        day = arr[0];
-        mon = arr[1];
-        year = arr[2];
-        course = pref.getString(Constants.COURSE,"Not found");
-        String path = year+"/"+mon+"/"+day+"/"+course+"/"+uid;
-        Log.d(TAG,path);
-        b1.setEnabled(false);
-        myRef.child(path).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG,dataSnapshot.toString());
-                if(dataSnapshot.getValue()!=null){
-                    b1.setEnabled(false);
-                    b1.setText("You already marked attendence");
-                }else{
-                    b1.setEnabled(true);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(getContext(), "Error : "+databaseError, Toast.LENGTH_SHORT).show();
-            }
-        });
-
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -153,7 +118,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void markAttendence(){
-        String year,mon,day,course,uid,time;
+        String year,mon,day,course,uid,time,name;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/HH:mm:ss");
         String currentDateandTime = sdf.format(new Date());
         String[] arr = currentDateandTime.split("/");
@@ -162,10 +127,16 @@ public class HomeFragment extends Fragment {
         day = arr[2];
         time = arr[3];
         course = pref.getString(Constants.COURSE,"Not found");
+        name = pref.getString(Constants.NAME,"Not Found");
         uid = FirebaseAuth.getInstance().getUid();
-         myRef.child(year+"/"+mon+"/"+day+"/"+course+"/"+uid).setValue(time);
+
+        Attendence attendence = new Attendence(year,mon,day,time,course,uid,name);
+
+        myRef.push().setValue(attendence);
         editor.putInt(Constants.TODAY_ATTEND,Integer.parseInt(year+mon+day));
         editor.commit();
 
     }
+
+
 }

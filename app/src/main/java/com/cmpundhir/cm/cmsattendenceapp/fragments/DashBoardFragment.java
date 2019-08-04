@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,12 +28,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.tsongkha.spinnerdatepicker.DatePicker;
+import com.tsongkha.spinnerdatepicker.DatePickerDialog;
+import com.tsongkha.spinnerdatepicker.SpinnerDatePickerDialogBuilder;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
-public class DashBoardFragment extends Fragment {
+public class DashBoardFragment extends Fragment{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -77,6 +82,39 @@ public class DashBoardFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_dash_board, container, false);
         listView = view.findViewById(R.id.list);
+        final Button b1,b2;
+        b1 = view.findViewById(R.id.b1);
+        b2 = view.findViewById(R.id.b2);
+        b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        String month = String.format("%02d",(monthOfYear+1));
+                        String day = String.format("%02d",dayOfMonth);
+                        String date1 = day + "-" + month + "-" + year;
+                        b1.setText(date1);
+                    }
+                };
+                getDob(listener);
+            }
+        });
+        b2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        String month = String.format("%02d",(monthOfYear+1));
+                        String day = String.format("%02d",dayOfMonth);
+                        String date1 = day + "-" + month + "-" + year;
+                        b2.setText(date1);
+                    }
+                };
+                getDob(listener);
+            }
+        });
         MyAdapter adapter = new MyAdapter(getContext(),attendenceList);
         myRef.getRef().addValueEventListener(new ValueEventListener() {
             @Override
@@ -123,6 +161,7 @@ public class DashBoardFragment extends Fragment {
         mListener = null;
     }
 
+
     class MyAdapter extends ArrayAdapter<String> {
         Context context;
         List<Attendence> attendenceList = new ArrayList<>();
@@ -145,4 +184,20 @@ public class DashBoardFragment extends Fragment {
             return view;
         }
     }
+
+    private void getDob(DatePickerDialog.OnDateSetListener listener){
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        new SpinnerDatePickerDialogBuilder()
+                .context(getContext())
+                .callback(listener)
+                .spinnerTheme(R.style.NumberPickerStyle)
+                .showTitle(true)
+                .showDaySpinner(true)
+                .defaultDate(year-18, 0, 1)
+                .maxDate(year, 0, 1)
+                .minDate(year-70, 0, 1)
+                .build()
+                .show();
+    }
+
 }

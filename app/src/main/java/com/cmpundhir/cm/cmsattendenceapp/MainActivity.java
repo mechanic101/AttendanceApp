@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference(Constants.ATTENDENCE);
 
-    List<Attendence> attendenceList = new ArrayList<>();
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 1, this);
 
-        checkAttend();
+
     }
 
     @Override
@@ -256,40 +256,5 @@ public class MainActivity extends AppCompatActivity
         Toast.makeText(this, "Provider disabled", Toast.LENGTH_SHORT).show();
     }
 
-    private void checkAttend(){
-        String year,mon,day,course,uid,time,name;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/HH:mm:ss");
-        String currentDateandTime = sdf.format(new Date());
-        String[] arr = currentDateandTime.split("/");
-        year = arr[0];
-        mon = arr[1];
-        day = arr[2];
-        time = arr[3];
-        course = pref.getString(Constants.COURSE,"Not found");
-        name = pref.getString(Constants.NAME,"Not Found");
-        uid = FirebaseAuth.getInstance().getUid();
 
-        Query query = myRef.orderByChild("userId").equalTo(uid);
-
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG,dataSnapshot.toString());
-                if(dataSnapshot.getValue()!=null){
-                    for(DataSnapshot d : dataSnapshot.getChildren()){
-                        Attendence attendence = d.getValue(Attendence.class);
-                        attendenceList.add(attendence);
-                        Log.d(TAG,attendence.toString());
-                    }
-                }else{
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d(TAG,databaseError.toString());
-            }
-        });
-    }
 }

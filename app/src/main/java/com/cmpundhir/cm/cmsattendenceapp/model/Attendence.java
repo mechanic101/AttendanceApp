@@ -1,43 +1,34 @@
 package com.cmpundhir.cm.cmsattendenceapp.model;
 
-public class Attendence {
-    private String year,month,day,time,subject,userId,name;
+public class Attendence implements Comparable<Attendence>{
+    private String date,time,subject,userId,name,date_userId;
 
     public Attendence() {
     }
 
-    public Attendence(String year, String month, String day, String time, String subject, String userId, String name) {
-        this.year = year;
-        this.month = month;
-        this.day = day;
+    public Attendence(String date, String time, String subject, String userId, String name, String date_userId) {
+        this.date = date;
+        this.time = time;
+        this.subject = subject;
+        this.userId = userId;
+        this.name = name;
+        this.date_userId = date_userId;
+    }
+
+    public Attendence(String date, String time, String subject, String userId, String name) {
+        this.date = date;
         this.time = time;
         this.subject = subject;
         this.userId = userId;
         this.name = name;
     }
 
-    public String getYear() {
-        return year;
+    public String getDate() {
+        return date;
     }
 
-    public void setYear(String year) {
-        this.year = year;
-    }
-
-    public String getMonth() {
-        return month;
-    }
-
-    public void setMonth(String month) {
-        this.month = month;
-    }
-
-    public String getDay() {
-        return day;
-    }
-
-    public void setDay(String day) {
-        this.day = day;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getTime() {
@@ -72,16 +63,28 @@ public class Attendence {
         this.name = name;
     }
 
+    public String getDate_userId() {
+        return date_userId;
+    }
+
+    public void setDate_userId(String date_userId) {
+        this.date_userId = date_userId;
+    }
+
     @Override
     public String toString() {
         return "Attendence{" +
-                "year='" + year + '\'' +
-                ", month='" + month + '\'' +
-                ", day='" + day + '\'' +
+                "date='" + date + '\'' +
                 ", time='" + time + '\'' +
                 ", subject='" + subject + '\'' +
                 ", userId='" + userId + '\'' +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+
+    @Override
+    public int compareTo(Attendence attendence) {
+        return this.date.compareTo(attendence.getDate());
     }
 }

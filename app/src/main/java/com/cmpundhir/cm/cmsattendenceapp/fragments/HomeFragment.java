@@ -28,6 +28,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Queue;
 
@@ -41,6 +42,7 @@ public class HomeFragment extends Fragment {
     Button b1;
     SharedPreferences pref;
     SharedPreferences.Editor editor;
+    ArrayList<Attendence> attendenceList = new ArrayList<>();
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference(Constants.ATTENDENCE);
     private static final String ARG_PARAM1 = "param1";
@@ -94,6 +96,12 @@ public class HomeFragment extends Fragment {
                 b1.setText("You are marked for the day");
             }
         });
+        String year,mon,day,date;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
+        String currentDateandTime = sdf.format(new Date());
+        t2.setText(currentDateandTime);
+
+        checkAttend();
         return view;
     }
 
@@ -129,14 +137,43 @@ public class HomeFragment extends Fragment {
         course = pref.getString(Constants.COURSE,"Not found");
         name = pref.getString(Constants.NAME,"Not Found");
         uid = FirebaseAuth.getInstance().getUid();
-
-        Attendence attendence = new Attendence(year,mon,day,time,course,uid,name);
+        String date = year+mon+day;
+        Attendence attendence = new Attendence(date,time,course,uid,name,date+"_"+uid);
 
         myRef.push().setValue(attendence);
         editor.putInt(Constants.TODAY_ATTEND,Integer.parseInt(year+mon+day));
         editor.commit();
 
     }
+    private void checkAttend(){
+        String year,mon,day,uid;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/HH:mm:ss");
+        String currentDateandTime = sdf.format(new Date());
+        String[] arr = currentDateandTime.split("/");
+        year = arr[0];
+        mon = arr[1];
+        day = arr[2];
+        uid = FirebaseAuth.getInstance().getUid();
+        String date = year+mon+day;
+        Query query = myRef.orderByChild("date_userId").equalTo(date+"_"+uid);
 
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG,dataSnapshot.toString());
+                if(dataSnapshot.getValue()!=null){
+                    b1.setEnabled(false);
+                    b1.setText("You are marked for the day");
+                }else{
+                    b1.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d(TAG,databaseError.toString());
+            }
+        });
+    }
 
 }

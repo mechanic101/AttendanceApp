@@ -128,9 +128,9 @@ public class SelfyActivity extends AppCompatActivity implements View.OnClickList
     private void addToStorage(){
         ll1.setVisibility(View.VISIBLE);
         mStorageRef = FirebaseStorage.getInstance().getReference();
-        final StorageReference riversRef = mStorageRef.child(Constants.PROFILE_PICTURES).child("abc");
+        final StorageReference riversRef = mStorageRef.child(Constants.PROFILE_PICTURES).child(FirebaseAuth.getInstance().getUid()+".jpg");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 40, baos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
         byte[] data = baos.toByteArray();
         riversRef.putBytes(data)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {

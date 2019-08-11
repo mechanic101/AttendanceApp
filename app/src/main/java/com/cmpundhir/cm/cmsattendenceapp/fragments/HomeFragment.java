@@ -1,23 +1,36 @@
 package com.cmpundhir.cm.cmsattendenceapp.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.cmpundhir.cm.cmsattendenceapp.MainActivity;
 import com.cmpundhir.cm.cmsattendenceapp.R;
+import com.cmpundhir.cm.cmsattendenceapp.init.SelfyActivity;
 import com.cmpundhir.cm.cmsattendenceapp.model.Attendence;
 import com.cmpundhir.cm.cmsattendenceapp.util.Constants;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,7 +39,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,6 +59,8 @@ public class HomeFragment extends Fragment {
 
     private static final String TAG = "HomeFragment";
     TextView t1,t2;
+    ImageView img;
+    ProgressBar progressBar;
     Button b1;
     SharedPreferences pref;
     SharedPreferences.Editor editor;
@@ -84,6 +106,8 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        progressBar = view.findViewById(R.id.progressBar);
+        img = view.findViewById(R.id.img);
         t1 = view.findViewById(R.id.t1);
         t2 = view.findViewById(R.id.t2);
         b1 = view.findViewById(R.id.b1);
@@ -102,6 +126,7 @@ public class HomeFragment extends Fragment {
         t2.setText(currentDateandTime);
 
         checkAttend();
+        getImgStorage();
         return view;
     }
 
@@ -176,4 +201,28 @@ public class HomeFragment extends Fragment {
         });
     }
 
+
+    private void getImgStorage(){
+        progressBar.setVisibility(View.VISIBLE);
+        StorageReference mStorageRef;
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+        final StorageReference riversRef = mStorageRef.child(Constants.PROFILE_PICTURES).child(FirebaseAuth.getInstance().getUid()+".jpg");
+
+        riversRef.getBytes(1024*1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+                img.setImageBitmap(bitmap);
+                progressBar.setVisibility(View.GONE);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                e.printStackTrace();
+                Log.d("img_failed",e.getMessage());
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+
+    }
 }

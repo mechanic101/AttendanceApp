@@ -19,16 +19,16 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".init.SelfyActivity">
+
+        </activity>
+        <activity android:name=".init.RegisterActivity" />
+        <activity android:name=".init.LoginActivity" />
+        <activity android:name=".init.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".init.RegisterActivity" />
-        <activity android:name=".init.LoginActivity" />
-        <activity android:name=".init.SplashActivity">
-
         </activity>
         <activity
             android:name=".MainActivity"

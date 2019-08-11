@@ -5,6 +5,7 @@ public class Constants {
     public static final String TEACHER = "Teacher";
     public static final String COURSES = "Courses";
     public static final String ATTENDENCE = "Attendence";
+    public static final String PROFILE_PICTURES = "profile_pictures";
 
 
     public static final String NAME = "Name";

@@ -1,14 +1,10 @@
 package com.cmpundhir.cm.cmsattendenceapp.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,40 +13,28 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
-import com.bumptech.glide.Glide;
-import com.cmpundhir.cm.cmsattendenceapp.MainActivity;
 import com.cmpundhir.cm.cmsattendenceapp.R;
-import com.cmpundhir.cm.cmsattendenceapp.init.SelfyActivity;
 import com.cmpundhir.cm.cmsattendenceapp.model.Attendence;
 import com.cmpundhir.cm.cmsattendenceapp.util.Constants;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Queue;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -107,7 +91,7 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         progressBar = view.findViewById(R.id.progressBar);
-        img = view.findViewById(R.id.img);
+
         t1 = view.findViewById(R.id.t1);
         t2 = view.findViewById(R.id.t2);
         b1 = view.findViewById(R.id.b1);

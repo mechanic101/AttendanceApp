@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 
 import com.cmpundhir.cm.cmsattendenceapp.MainActivity;
 import com.cmpundhir.cm.cmsattendenceapp.R;
@@ -24,8 +25,14 @@ public class SplashActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
+            }
+        },1500);
     }
 
     private void updateUI(FirebaseUser currentUser) {

@@ -1,42 +1,42 @@
 {
   "project_info": {
-    "project_number": "310250089688",
-    "firebase_url": "https://cmsattendenceapp.firebaseio.com",
-    "project_id": "cmsattendenceapp",
-    "storage_bucket": "cmsattendenceapp.appspot.com"
+    "project_number": "1056578253362",
+    "firebase_url": "https://elevated-epoch-247608.firebaseio.com",
+    "project_id": "elevated-epoch-247608",
+    "storage_bucket": "elevated-epoch-247608.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:310250089688:android:c0f2066b8621715b",
+        "mobilesdk_app_id": "1:1056578253362:android:9fb4647ae728677e94c22b",
         "android_client_info": {
           "package_name": "com.cmpundhir.cm.cmsattendenceapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "310250089688-dt6oa4v1fa5rsqm05ken0i15e8iblm7s.apps.googleusercontent.com",
+          "client_id": "1056578253362-co2tmqg2vbi97vnk2n2r48ijconi2cba.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.cmpundhir.cm.cmsattendenceapp",
-            "certificate_hash": "92ee1811b9aee6122ee5271bce32e5ec101c4e7e"
+            "certificate_hash": "64e131129aa61ec346cc617f242f97ccf033e5cd"
           }
         },
         {
-          "client_id": "310250089688-454u07e5u7f8mqp6195iq26l345gfm0k.apps.googleusercontent.com",
+          "client_id": "1056578253362-bidqln1ofm8snoia6tk1loap9ngrcouv.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCmcW8S47iLX7W5G8qlLjxvjV70R-seiaI"
+          "current_key": "AIzaSyBNwmhSTCMuERlPgLfpGg2-zcYLVxzKTV8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "310250089688-454u07e5u7f8mqp6195iq26l345gfm0k.apps.googleusercontent.com",
+              "client_id": "1056578253362-bidqln1ofm8snoia6tk1loap9ngrcouv.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
